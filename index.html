@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html ng-app="builder" ngCsp>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Angular</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="slick.css" />
+    <link rel="stylesheet" type="text/css" href="slick-theme.css" />
+
+    <link rel="stylesheet" href="creative.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="slick.js"></script>
+
+</head>
+
+<body ng-controller="StaircaseController as staircase">
+    <div class="logo-area">
+        <div class="logo-img-container">
+            <img src="assets/img/ironshoplogo.png" alt="iron shop logo" />
+        </div>
+        <div class="switch">
+            <p class="switch-label choice">Indoor</p>
+            <div class="switch-container">
+                <input id="indoor-toggle" class="toggle toggle-round" type="checkbox">
+                <label for="indoor-toggle"></label>
+            </div>
+            <p class="switch-label">Outdoor</p>
+        </div>
+        <div class="review-button">
+            <div class="review">
+                <p class="review-trigger hover-hand">Review &amp; Save <i class="fa fa-arrow-right"></i></p>
+            </div>
+        </div>
+    </div>
+    {{staircase.printSections}}
+    <div ng-controller="SectionController as section">
+        <ul class="nav top-nav">
+            <li class="stairTab" ng-repeat="sectionKey in staircase.sections" ng-class="{active:section.isSelected(sectionKey)}">
+                <a href="" ng-click="section.selectTab(sectionKey)"> {{sectionKey}} </a> <i class="fa fa-caret-down down-caret"></i>
+            </li>
+        </ul>
+        <div class="col-md-12 row">
+            <div class="col-md-3 staircase">
+                <!-- <h4>Spindels: {{staircase.spindels.name}}</h4><br>
+                <h4>Handrail: {{staircase.handrails.name}}</h4><br>
+                <h4>Pole: {{staircase.poles.name}}</h4><br>
+                <h4>Tread Covering Coverings: {{staircase["Tread Coverings"].name}}</h4><br>
+                <h4>Pole Cap: {{staircase["Pole Caps"].name}}</h4><br>
+                <h4>Treads: {{staircase.treads.name}}</h4><br>
+                <h4>Color &amp; Finish: {{staircase["Colors & Finishes"].name}}</h4><br> -->
+                <img ng-src='assets/spindles-default.png' class="spindels" />
+                <img ng-src='assets/handrail-default.png' class="handrails" />
+                <img ng-src='assets/pole-default.png' class="poles" />
+                <img ng-src='assets/woodtread-{{staircase["Tread Coverings"].name}}.png' class="tread-coverings" />
+                <img ng-src='assets/steps-{{staircase.treads.name}}.png' class="treads" />
+
+            </div>
+            <div class="col-md-9">
+                <div class="sections">
+                    <div ng-repeat="sectionKey in staircase.sections" ng-show="section.isSelected(sectionKey)">
+                        <div class="sectionTitle">
+                            <h2>{{sectionKey}}</h2>
+                            <p>{{staircase.descriptions[sectionKey]}}</p>
+                        </div>
+                        <div class="s-slider">
+                            <div class="invisi-slide"></div>
+                            <div ng-repeat="option in staircase.stairOptions[sectionKey]">
+                                <div class="slide-container">
+                                    <!-- <img src="assets/img/{{option}}.jpg" alt="{{option}}" ng-click="staircase.setOption(sectionKey, option)"> -->
+                                    <img src="http://placehold.it/200x200" width="200px" height="200px" alt="{{option.name}}" ng-class="{selected: staircase[sectionKey] === option}" ng-click="staircase.setOption(sectionKey, option)">
+                                    <p class="option-name fa">{{option.name}} &nbsp; <i class="fa fa-info" ng-click="section.setTakeOverOptions(option, sectionKey)"></i></p>
+                                </div>
+                            </div>
+                            <div class="invisi-slide"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="builder-options">
+                    <form>
+                        <div class="col-md-12 row form-group">
+                            <button class="btn btn-primary" ng-click="staircase.saveBuild()">Save your build</button>
+                            <input class="form-control" id="buildcode" type="text" placeholder="build code" name="buildcode" disabled="disabled">
+                        </div>
+                        <div class="col-md-12 row form-group">
+                            <input class="form-control" id="loadBuild" type="text" placeholder="Load a build" name="loadBuild">
+                            <button ng-click="staircase.loadBuild()" class="btn btn-secondary">Load a build</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="takeover">
+            <i class="glyphicon glyphicon-remove close-takeover" ng-click="section.hideTakeover()"></i>
+            <div class="item-description">
+                <div class="col-md-6">
+                    <!-- <img src="assets/img/{{option}}.jpg" alt="{{option.name}}"> -->
+                    <img src="http://placehold.it/200x200" alt="{{option.name}}">
+                </div>
+                <div class="col-md-6">
+                    <h2 class="orange-title">{{section.optionTitle}}</h2>
+                    <h1>{{section.optionChoice.name}}</h1>
+                    <p>{{section.optionChoice.description}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="takeover-nav">
+            <div class="close-nav hover-hand" ng-click="section.hideTakeover()">
+                <p><i class="fa fa-arrow-left"></i> Back to Builder</p>
+            </div>
+            <div id="menu" class="section active">
+                <nav>
+                    <li><a>Review Your Selection <i class="fa fa-tag tag"></i></a></li>
+                    <li><a>Save Your Stairs <i class="fa fa-tag tag"></i></a></li>
+                    <li><a>Get A Quote <i class="fa fa-tag tag"></i></a></li>
+                    <li><a>Add My Messurements <i class="fa fa-tag tag"></i></a></li>
+                    <li><a>Download &amp; Print <i class="fa fa-tag tag"></i></a></li>
+                    <li><a ng-click="staircase.facebookShare()">Share with Friends <i class="fa fa-tag tag"></i></a></li>
+                    <li><a>Schedule a Consultation <i class="fa fa-tag tag"></i></a></li>
+                    <li><a ng-click="section.hideTakeover()">Exit</a></li>
+                </nav>
+            </div>
+            <div id="quoteForm" class="section">
+                <h2>Get A Quote</h2>
+                <form>
+                    <div class="col-sm-6 form-group">
+                        <label for="">Field</label>
+                        <input class="form-control" type="text" placeholder="input" />
+                    </div>
+
+                    <div class="col-sm-6 form-group">
+                        <label for="">Field</label>
+                        <input class="form-control" type="text" placeholder="input" />
+                    </div>
+
+                    <div class="col-sm-6 form-group">
+                        <label for="">Field</label>
+                        <input class="form-control" type="text" placeholder="input" />
+                    </div>
+
+                    <div class="col-sm-6 form-group">
+                        <label for="">Field</label>
+                        <input class="form-control" type="text" placeholder="input" />
+                    </div>
+
+                    <div class="col-sm-6 form-group">
+                        <label for="">Field</label>
+                        <input class="form-control" type="text" placeholder="input" />
+                    </div>
+
+                    <div class="col-sm-6 form-group">
+                        <label for="">Field</label>
+                        <input class="form-control" type="text" placeholder="input" />
+                    </div>
+                    <a class="btn btn-primary">Submit</a>
+                </form>
+            </div>
+            <div id="review" class="section">
+                <div class="row" ng-repeat="sectionKey in staircase.sections">
+                    <div class="col-xs-4">
+                        <p>{{sectionKey}}</p>
+                    </div>
+                    <div class="col-xs-4">
+                        <p>{{staircase[sectionKey].name}}</p>
+                    </div>
+                    <div class="col-xs-4">
+                        <a ng-click="section.selectTab(sectionKey)"><p><i ng-click="section.setTakeOverOptions(staircase[sectionKey], sectionKey)" class="fa fa-fa-arrows-h"></i>Change {{staircase[sectionKey].name}}</p></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="angular.min.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

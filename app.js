@@ -1,7 +1,7 @@
 (function() {
     var build = angular.module('builder', []);
 
-    build.controller('StaircaseController', function() {
+    build.controller('BuilderController', function() {
         this.builderOptions = buildOptions;
         this.sections = Object.keys(this.builderOptions);
         for (section in this.sections) {
